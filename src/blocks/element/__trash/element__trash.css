@@ -1,0 +1,13 @@
+.element__trash{
+    background-image: url(../../../images/Group.svg);
+    width: 18px;
+    height: 19px;
+    background-color: rgba(0, 0, 0, 0);
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 0;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
