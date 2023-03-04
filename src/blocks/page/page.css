@@ -15,7 +15,7 @@
   -moz-text-size-adjust: 100%;
   font-weight: 400;
   box-sizing: border-box;
-  min-height: 100vh
+  min-height: 100vh;
 }
 
 @media screen and (max-width: 1000px) {
