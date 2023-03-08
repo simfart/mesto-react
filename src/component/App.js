@@ -7,6 +7,7 @@ import api from "../utils/Api";
 import ImagePopup from "./ImagePopup";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
 
 
 function App() {
@@ -75,10 +76,20 @@ function App() {
       .catch((err) => {
         console.log('здесь ошибка', err); // выведем ошибку в консоль
       })
-      // .finally(() => {
-      //   editProfileForm.renderLoading(false)
-      // });
   }
+
+
+  function handleUpdateAvatar(values) {    //Редактирование аватара
+       api.editAvatar(values)
+      .then((res) => {
+        setCurrentUser(res);
+        closeAllPopups()
+      })
+      .catch((err) => {
+        console.log('здесь ошибка', err); // выведем ошибку в консоль
+      })
+  }
+
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -99,11 +110,19 @@ function App() {
          
         />
         <Footer />
+
         <EditProfilePopup
         isOpen={isEditProfilePopupOpen}
         onClose={closeAllPopups}
         onUpdateUser={handleUpdateUser}
+        
        />
+
+       <EditAvatarPopup
+        isOpen={isEditAvatarPopupOpen} 
+        onClose={closeAllPopups} 
+        onUpdateAvatar={handleUpdateAvatar}
+        />
 
         <PopupWithForm
           isOpen={isAddPlacePopupOpen}
@@ -134,23 +153,7 @@ function App() {
           <span id="cardLink-input-error" className="popup__error"></span>
         </PopupWithForm>
 
-        <PopupWithForm
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-          popupTitle="Обновить аватар"
-          popunName="update_avatar"
-          buttonText="Обновить"
-        >
-          <input
-            id="Avatar-input"
-            type="url"
-            className="popup__item popup__item_el_cardLink"
-            name="avatarLink"
-            placeholder="Ссылка на картинку"
-            required
-          />
-          <span id="Avatar-input-error" className="popup__error"></span>
-        </PopupWithForm>
+        
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
       </div>

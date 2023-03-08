@@ -18,28 +18,25 @@ function EditProfilePopup({isOpen, onClose, onUpdateUser}) {
     function handleChangeName(e) {
         // установите нужное состояние
         // используйте e.target.name и e.target.value
-        setName(e.target.value);
-        
+        setName(e.target.value);   
        
     }
 
     function handleChangeDescription(e) {
         // установите нужное состояние
-        // используйте e.target.name и e.target.value
-        
+        // используйте e.target.name и e.target.value        
         setDescription(e.target.value);
     }
 
       function handleSubmit(e) {
         // Запрещаем браузеру переходить по адресу формы
-        e.preventDefault();    
-      
+        e.preventDefault();          
         // Передаём значения управляемых компонентов во внешний обработчик
         onUpdateUser({
           name,
           about: description,
         });
-      }
+     }
 
   return (
     <PopupWithForm
