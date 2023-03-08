@@ -6,6 +6,7 @@ import PopupWithForm from "./PopupWithForm";
 import api from "../utils/Api";
 import ImagePopup from "./ImagePopup";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import EditProfilePopup from './EditProfilePopup';
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
   const [currentUser, setCurrentUser] = useState({});
+
 
   //Закрытие всех попапов по Х
   function closeAllPopups() {
@@ -29,7 +31,20 @@ function App() {
     setSelectedCard(card);
   }
 
-  function handleCardLike(card) {
+   // Данные из API
+ useEffect(() => {
+  
+  Promise.all([api.getInitialUserInfo(), api.getInitialUserCards()])
+    .then(([resUserInfo, resCards]) => {        
+      setCurrentUser(resUserInfo);    
+      setCards(resCards)
+    })
+    .catch((err) => {
+      console.log(err); // выведем ошибку в консоль
+    });
+}, []);
+
+  function handleCardLike(card) { 
     // Снова проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
@@ -40,8 +55,7 @@ function App() {
     });
   }
 
-  function handleCardDelete (card) {   // удаление карточки      
-  
+  function handleCardDelete (card) {   // удаление карточки        
       api.deleteCards(card._id)
         .then(() => {            
           const filtered = cards.filter((newCard) => newCard!==card );         
@@ -49,23 +63,22 @@ function App() {
         })
         .catch((err) => {
           console.log(err); // выведем ошибку в консоль
-        });
-    
+        });    
   }
 
-
-
-  // Данные из API
-  useEffect(() => {
-    Promise.all([api.getInitialUserInfo(), api.getInitialUserCards()])
-      .then(([resUserInfo, resCards]) => {        
-        setCurrentUser(resUserInfo);    
-        setCards(resCards)
+  function handleUpdateUser(values) {   //Редактирование профиля
+      api.editlUserInfo(values)
+      .then((res) => {      
+        setCurrentUser(res);
+        closeAllPopups()
       })
       .catch((err) => {
-        console.log(err); // выведем ошибку в консоль
-      });
-  }, []);
+        console.log('здесь ошибка', err); // выведем ошибку в консоль
+      })
+      // .finally(() => {
+      //   editProfileForm.renderLoading(false)
+      // });
+  }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -86,37 +99,11 @@ function App() {
          
         />
         <Footer />
-
-        <PopupWithForm
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
-          popupTitle="Редактировать профиль"
-          popunName="add_profile"
-          buttonText="Сохранить"
-        >
-          <input
-            id="heading-input"
-            type="text"
-            className="popup__item popup__item_el_heading"
-            name="avatarName"
-            placeholder="Имя"
-            minLength="2"
-            maxLength="40"
-            required
-          />
-          <span id="heading-input-error" className="popup__error"></span>
-          <input
-            id="subheading-input"
-            type="text"
-            className="popup__item popup__item_el_subheading"
-            name="avatarDescription"
-            placeholder="О себе"
-            minLength="2"
-            maxLength="200"
-            required
-          />
-          <span id="subheading-input-error" className="popup__error"></span>
-        </PopupWithForm>
+        <EditProfilePopup
+        isOpen={isEditProfilePopupOpen}
+        onClose={closeAllPopups}
+        onUpdateUser={handleUpdateUser}
+       />
 
         <PopupWithForm
           isOpen={isAddPlacePopupOpen}

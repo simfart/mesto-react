@@ -7,20 +7,24 @@ function PopupWithForm({
   children,
   isOpen,
   onClose,
+  onSubmit
 }) {
+
+  
   return (
     <div
-      className={`popup popup_${popunName} ${isOpen ? "popup_opened" : ""}`}
+      className = {`popup popup_${popunName} ${isOpen ? "popup_opened" : ""}`}
       name={`popup_${popunName}`}
     >
       <div className="popup__conteiner">
-        <form name="formPopup" className="popup__form" noValidate>
+        <form name="formPopup" className="popup__form" onSubmit={onSubmit} noValidate>
           <h2 className="popup__title">{popupTitle}</h2>
           <fieldset className="popup__info">{children}</fieldset>
-        </form>
-        <button className="popup__button" type="submit" aria-label="Сохранить">
+          <button className="popup__button" type="submit" aria-label="Сохранить">
           {buttonText}
         </button>
+        </form>
+        
         <button
           onClick={onClose}
           className="popup__close"
