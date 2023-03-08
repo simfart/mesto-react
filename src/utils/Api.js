@@ -29,19 +29,14 @@ class Api {
     }).then(res => this._getResponseData(res));
   }
 
-  setLikes(idCard) {
+  setLikes(idCard, isLiked) {
     return fetch(`${this._baseUrl}/cards/${idCard}/likes/`, {
-      method: "PUT",
+      method: isLiked? "PUT" : "DELETE",
       headers: this._headers,
     }).then(res => this._getResponseData(res));
   }
 
-  deleteLikes(idCard) {
-    return fetch(`${this._baseUrl}/cards/${idCard}/likes/`, {
-      method: "DELETE",
-      headers: this._headers,
-    }).then(res => this._getResponseData(res));
-  }
+
 
   deleteCards(idCard) {
     return fetch(`${this._baseUrl}/cards/${idCard}/`, {

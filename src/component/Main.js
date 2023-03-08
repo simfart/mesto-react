@@ -3,7 +3,7 @@ import Card from './Card';
 
 
 
-function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, userName, userDescription, userAvatar, cards }) {
+function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardDelete, onCardLike, userName, userDescription, userAvatar, cards }) {
     return (
         <main className="content">
             <section className="profile">
@@ -19,8 +19,10 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, userName, 
                 {cards.map((card) => (
                     <Card
                         onCardClick={onCardClick}
+                        onCardLike={onCardLike}
+                        onCardDelete={onCardDelete}
                         card={card}
-                        key={card.cardId}
+                        key={card._id}
                     />
                 ))}
             </section>

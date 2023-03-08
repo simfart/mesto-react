@@ -1,18 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState} from 'react';
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import api from "../utils/Api";
 import ImagePopup from "./ImagePopup";
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
+
 
 function App() {
   const [isEditProfilePopupOpen, setProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
-  const [userInfo, setProfileInfo] = useState({});
+
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [currentUser, setCurrentUser] = useState({});
 
   //Закрытие всех попапов по Х
   function closeAllPopups() {
@@ -26,23 +29,38 @@ function App() {
     setSelectedCard(card);
   }
 
+  function handleCardLike(card) {
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api.setLikes(card._id, !isLiked)
+    .then((newCard) => {
+      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+    });
+  }
+
+  function handleCardDelete (card) {   // удаление карточки      
+  
+      api.deleteCards(card._id)
+        .then(() => {            
+          const filtered = cards.filter((newCard) => newCard!==card );         
+          setCards(filtered) 
+        })
+        .catch((err) => {
+          console.log(err); // выведем ошибку в консоль
+        });
+    
+  }
+
+
+
   // Данные из API
   useEffect(() => {
     Promise.all([api.getInitialUserInfo(), api.getInitialUserCards()])
-      .then(([resUserInfo, resCards]) => {
-        setProfileInfo({
-          myId: resUserInfo._id,
-          userName: resUserInfo.name,
-          userDescription: resUserInfo.about,
-          userAvatar: resUserInfo.avatar,
-        });
-        setCards(
-          resCards.map((item) => ({
-            name: item.name,
-            link: item.link,
-            cardId: item._id,
-          }))
-        );
+      .then(([resUserInfo, resCards]) => {        
+        setCurrentUser(resUserInfo);    
+        setCards(resCards)
       })
       .catch((err) => {
         console.log(err); // выведем ошибку в консоль
@@ -50,6 +68,7 @@ function App() {
   }, []);
 
   return (
+    <CurrentUserContext.Provider value={currentUser}>
     <div className="body">
       <div className="page">
         <Header />
@@ -58,10 +77,13 @@ function App() {
           onEditAvatar={() => { setEditAvatarPopupOpen(!isEditAvatarPopupOpen) }}
           onAddPlace={() => { setAddPlacePopupOpen(!isAddPlacePopupOpen) }}
           onCardClick={handleCardClick}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
           cards={cards}
-          userName={userInfo.userName}
-          userDescription={userInfo.userDescription}
-          userAvatar={userInfo.userAvatar}
+          userName={currentUser.name}
+          userDescription={currentUser.about}
+          userAvatar={currentUser.avatar}
+         
         />
         <Footer />
 
@@ -146,6 +168,7 @@ function App() {
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
       </div>
     </div>
+    </CurrentUserContext.Provider>
   );
 }
 
