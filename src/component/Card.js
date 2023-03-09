@@ -27,7 +27,6 @@ function Card({ card, onCardClick, onCardLike, onCardDelete }) {
     <figure className="element">
       <img className="element__photo" onClick={handleClick} src={card.link} alt={card.name} />
       {isOwn && <button className='element__trash' onClick={handleDeleteClick} />} 
-      {/* <button className="element__trash" type="button"></button> */}
       <figcaption className="element__description">
         <h2 className="element__title">{card.name}</h2>
         <div className="element__like">

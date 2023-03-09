@@ -16,15 +16,10 @@ function EditProfilePopup({isOpen, onClose, onUpdateUser}) {
 
      
     function handleChangeName(e) {
-        // установите нужное состояние
-        // используйте e.target.name и e.target.value
-        setName(e.target.value);   
-       
+        setName(e.target.value);
     }
 
-    function handleChangeDescription(e) {
-        // установите нужное состояние
-        // используйте e.target.name и e.target.value        
+    function handleChangeDescription(e) { 
         setDescription(e.target.value);
     }
 
