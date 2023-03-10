@@ -17,7 +17,6 @@ class Api {
     }).then(res => this._getResponseData(res));
   }
 
-
   createNewCard(data) {
     return fetch(`${this._baseUrl}/cards/`, {
       method: "POST",
@@ -35,8 +34,6 @@ class Api {
       headers: this._headers,
     }).then(res => this._getResponseData(res));
   }
-
-
 
   deleteCards(idCard) {
     return fetch(`${this._baseUrl}/cards/${idCard}/`, {

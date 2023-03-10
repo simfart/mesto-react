@@ -10,21 +10,20 @@ function PopupWithForm({
   onSubmit
 }) {
 
-  
   return (
     <div
-      className = {`popup popup_${popunName} ${isOpen ? "popup_opened" : ""}`}
+      className={`popup popup_${popunName} ${isOpen ? "popup_opened" : ""}`}
       name={`popup_${popunName}`}
     >
-      <div className="popup__conteiner">
+      <div className="popup__conteiner popup__conteiner-open">
         <form name="formPopup" className="popup__form" onSubmit={onSubmit} noValidate>
           <h2 className="popup__title">{popupTitle}</h2>
           <fieldset className="popup__info">{children}</fieldset>
           <button className="popup__button" type="submit" aria-label="Сохранить">
-          {buttonText}
-        </button>
+            {buttonText}
+          </button>
         </form>
-        
+
         <button
           onClick={onClose}
           className="popup__close"

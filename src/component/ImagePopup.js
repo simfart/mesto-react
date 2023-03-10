@@ -4,7 +4,7 @@ function ImagePopup({ card, onClose }) {
 
   return (
     <div className={`popup popup_img-background ${card ? 'popup_opened' : ''}`} name="imagePopup">
-      <div className="popup-image">
+      <div className="popup-image popup__conteiner-open">
         <figure className="popup-image__conteiner">
           <img className="popup-image__photo" src={card?.link} alt={card?.name} />
           <figcaption className="popup-image__label"> {card?.name} </figcaption>
