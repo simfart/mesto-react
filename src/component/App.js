@@ -11,10 +11,10 @@ import AddPlacePopup from './AddPlacePopup';
 import ConfirmPopup from './ConfirmPopup';
 
 function App() {
-  const [isEditProfilePopupOpen, setProfilePopupOpen] = useState(false);
-  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
-  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
-  const [isConfirmPopupOpen, setConfirmPopupOpen] = useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
 
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
@@ -23,44 +23,51 @@ function App() {
 
   const [load, setLoad] = useState(false);
 
-  //Закрытие попапов по оверлею
-  function clickOverPopups(e) {
-    if (!(e.target.closest('.popup__conteiner-open'))) {
-      closeAllPopups()
-    }
-  }
+  const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard
 
-  function popupCloseEventListener() {
-    document.addEventListener('mousedown', clickOverPopups)
-  }
+  useEffect(() => {
+    function closeByEscape(evt) {
+      if (evt.key === 'Escape') {
+        closeAllPopups();
+      }
+    }
+    function clickOverPopups(e) {
+      if (!(e.target.closest('.popup__conteiner-open'))) {
+        closeAllPopups()
+      }
+    }
+    if (isOpen) { // навешиваем только при открытии
+      document.addEventListener('keydown', closeByEscape);
+      document.addEventListener('mousedown', clickOverPopups)
+      return () => {
+        document.removeEventListener('keydown', closeByEscape);
+        document.removeEventListener('mousedown', clickOverPopups)
+      }
+    }
+  }, [isOpen])
 
   //Закрытие всех попапов по Х
   function closeAllPopups() {
-    setProfilePopupOpen(false);
-    setAddPlacePopupOpen(false);
-    setEditAvatarPopupOpen(false);
-    setConfirmPopupOpen(false);
+    setIsEditProfilePopupOpen(false);
+    setIsAddPlacePopupOpen(false);
+    setIsEditAvatarPopupOpen(false);
+    setIsConfirmPopupOpen(false);
     setSelectedCard(null);
-    document.removeEventListener('mousedown', clickOverPopups)
   }
 
   function openProfilePopup() {
-    setProfilePopupOpen(!isEditProfilePopupOpen);
-    popupCloseEventListener()
+    setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
   }
 
   function openEditAvatarPopup() {
-    setEditAvatarPopupOpen(!isEditAvatarPopupOpen);
-    popupCloseEventListener()
+    setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
   }
   function openAddPlacePopup() {
-    setAddPlacePopupOpen(!isAddPlacePopupOpen);
-    popupCloseEventListener()
+    setIsAddPlacePopupOpen(!isAddPlacePopupOpen);
   }
 
   function handleCardClick(card) {   // Попап image
     setSelectedCard(card);
-    popupCloseEventListener()
   }
 
   // Данные из API
@@ -82,12 +89,15 @@ function App() {
     api.setLikes(card._id, !isLiked)
       .then((newCard) => {
         setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+      })
+      .catch((err) => {
+        console.log(err); // выведем ошибку в консоль
       });
   }
 
   function handleCardClickDelete(card) {
     setSelectedCardToDelete(card);
-    setConfirmPopupOpen(!isConfirmPopupOpen)
+    setIsConfirmPopupOpen(!isConfirmPopupOpen)
   }
 
   function handleCardDelete(card) {   // удаление карточки  

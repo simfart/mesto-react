@@ -1,31 +1,22 @@
 import React from 'react';
 import PopupWithForm from './PopupWithForm';
+import { useForm } from '../hooks/useForm';
 
 function AddPlacePopup({ isOpen, onClose, onAddPlace, isLoading }) {
 
-    const [name, setName] = React.useState('');
-    const [link, setLink] = React.useState('');
+    const { values, handleChange, setValues } = useForm({});
 
     React.useEffect(() => {
-        setName('');
-        setLink('');
-    }, [isOpen]);
-
-    function handleChangeName(e) {
-        setName(e.target.value);
-    }
-
-    function handleChangeLink(e) {
-        setLink(e.target.value);
-    }
+        setValues({});
+    }, [isOpen, setValues]);
 
     function handleSubmit(e) {
         // Запрещаем браузеру переходить по адресу формы
         e.preventDefault();
         // Передаём значения управляемых компонентов во внешний обработчик
         onAddPlace({
-            name,
-            link,
+            name: values.name,
+            link: values.link
         });
     }
 
@@ -39,12 +30,12 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, isLoading }) {
             onSubmit={handleSubmit}
         >
             <input
-                value={name || ''}
-                onChange={handleChangeName}
+                value={values.name || ''}
+                onChange={handleChange}
                 id="cardHeading-input"
                 type="text"
                 className="popup__item popup__item_el_cardHeading"
-                name="cardName"
+                name="name"
                 placeholder="Название"
                 minLength="2"
                 maxLength="30"
@@ -52,12 +43,12 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, isLoading }) {
             />
             <span id="cardHeading-input-error" className="popup__error"></span>
             <input
-                value={link || ''}
-                onChange={handleChangeLink}
+                value={values.link || ''}
+                onChange={handleChange}
                 id="cardLink-input"
                 type="url"
                 className="popup__item popup__item_el_cardLink"
-                name="cardLink"
+                name="link"
                 placeholder="Ссылка на картинку"
                 required
             />

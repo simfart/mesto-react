@@ -11,62 +11,66 @@ class Api {
     return Promise.reject(`Ошибка: ${res.status}`);
   }
 
+  _request(url, options) {
+    return fetch(url, options).then(this._getResponseData)
+  }
+
   getInitialUserCards() {
-    return fetch(`${this._baseUrl}/cards/`, {
+    return this._request(`${this._baseUrl}/cards/`, {
       headers: this._headers,
-    }).then(res => this._getResponseData(res));
+    })
   }
 
   createNewCard(data) {
-    return fetch(`${this._baseUrl}/cards/`, {
+    return this._request(`${this._baseUrl}/cards/`, {
       method: "POST",
       headers: this._headers,
       body: JSON.stringify({
         name: data.name,
         link: data.link,
       }),
-    }).then(res => this._getResponseData(res));
+    })
   }
 
   setLikes(idCard, isLiked) {
-    return fetch(`${this._baseUrl}/cards/${idCard}/likes/`, {
-      method: isLiked? "PUT" : "DELETE",
+    return this._request(`${this._baseUrl}/cards/${idCard}/likes/`, {
+      method: isLiked ? "PUT" : "DELETE",
       headers: this._headers,
-    }).then(res => this._getResponseData(res));
+    })
   }
 
   deleteCards(idCard) {
-    return fetch(`${this._baseUrl}/cards/${idCard}/`, {
+    return this._request(`${this._baseUrl}/cards/${idCard}/`, {
       method: "DELETE",
       headers: this._headers,
-    }).then(res => this._getResponseData(res));
+    })
   }
 
   getInitialUserInfo() {
-    return fetch(`${this._baseUrl}/users/me/`, {
+    return this._request(`${this._baseUrl}/users/me/`, {
       headers: this._headers,
-    }).then(res => this._getResponseData(res));
+    })
   }
 
   editlUserInfo(data) {
-    return fetch(`${this._baseUrl}/users/me/`, {
+    return this._request(`${this._baseUrl}/users/me/`, {
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({
         name: data.name,
         about: data.about
       })
-    }).then(res => this._getResponseData(res));
+    })
   }
 
   editAvatar(data) {
-    return fetch(`${this._baseUrl}/users/me/avatar/`, {
+    return this._request(`${this._baseUrl}/users/me/avatar/`, {
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({
         avatar: data.avatar
       })
-    }).then(res => this._getResponseData(res));
+    })
   }
 }
 
